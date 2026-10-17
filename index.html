@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>For Her Majesty, Miss Borchar 🦋</title>
+<style>
+/* ========== 1. THEME COLORS & BASE ========== */
+:root{
+  --black:#07030f; --deep:#140a26; --purple:#9b5cff; --lav:#c9b3ff;
+  --pink:#ffc2e2; --white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh; color:var(--white); overflow-x:hidden;
+  font-family:Georgia,"Palatino Linotype",serif; line-height:1.7;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(155,92,255,.35), transparent 55%),
+    radial-gradient(ellipse at 85% 40%, rgba(255,194,226,.15), transparent 50%),
+    radial-gradient(ellipse at 30% 100%, rgba(155,92,255,.3), transparent 55%),
+    var(--black);
+  background-attachment:fixed;
+}
+h1,h2{font-weight:normal;letter-spacing:.04em}
+.glow{ text-shadow:0 0 12px rgba(201,179,255,.8),0 0 32px rgba(155,92,255,.7) }
+
+/* ========== 2. WELCOME OVERLAY (the "magical letter") ========== */
+#welcome{
+  position:fixed; inset:0; z-index:100; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center; padding:24px;
+  background:radial-gradient(circle at center,#2a1250,var(--black) 70%);
+  transition:opacity 1.4s ease, visibility 1.4s;
+}
+#welcome.hide{opacity:0;visibility:hidden}
+#welcome h1{font-size:clamp(1.9rem,7vw,3.6rem);color:var(--lav);opacity:0;animation:rise 1.6s .4s forwards}
+#welcome p{font-size:clamp(1.1rem,4vw,1.9rem);color:var(--pink);margin-top:14px;opacity:0;animation:rise 1.6s 2s forwards}
+#openBtn{margin-top:38px;opacity:0;animation:rise 1.4s 3.4s forwards}
+
+/* ========== 3. BUTTONS ========== */
+.btn{
+  font:inherit; font-size:1.05rem; color:var(--white); cursor:pointer;
+  padding:14px 30px; border-radius:50px; border:1px solid var(--lav);
+  background:linear-gradient(135deg,rgba(155,92,255,.55),rgba(255,194,226,.25));
+  box-shadow:0 0 22px rgba(155,92,255,.55); transition:transform .3s, box-shadow .3s;
+}
+.btn:hover,.btn:focus-visible{transform:translateY(-3px) scale(1.04);box-shadow:0 0 38px rgba(201,179,255,.9);outline:none}
+
+/* ========== 4. HERO ========== */
+.hero{
+  position:relative; min-height:100vh; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center; padding:60px 20px 40px;
+}
+.hero h2{font-size:clamp(1.2rem,4vw,1.7rem);color:var(--pink);margin-bottom:26px}
+/* Photo frame with glowing purple aura */
+.frame{
+  position:relative; width:min(78vw,380px); border-radius:50% 50% 24px 24px / 38% 38% 24px 24px;
+  padding:6px; background:linear-gradient(160deg,var(--lav),var(--purple),var(--pink));
+  box-shadow:0 0 40px rgba(155,92,255,.8),0 0 110px rgba(155,92,255,.4);
+  animation:pulse 5s ease-in-out infinite;
+}
+.frame img{
+  display:block; width:100%; height:auto;           /* keeps original proportions */
+  max-height:70vh; object-fit:cover; border-radius:inherit;
+}
+.frame .fallback{ /* shown only if the photo is missing */
+  display:none; aspect-ratio:3/4; align-items:center; justify-content:center;
+  font-size:5rem; background:var(--deep); border-radius:inherit;
+}
+.frame.noimg img{display:none} .frame.noimg .fallback{display:flex}
+.crown{font-size:2rem;margin-bottom:6px;animation:float 4s ease-in-out infinite}
+.scroll{margin-top:28px;color:var(--lav);font-size:.95rem;animation:float 3s ease-in-out infinite}
+
+/* ========== 5. MESSAGE LETTER ========== */
+.letter{
+  position:relative; max-width:760px; margin:40px auto; padding:44px 30px;
+  border-radius:28px; text-align:center;
+  background:rgba(20,10,38,.65); backdrop-filter:blur(6px);
+  border:1px solid rgba(201,179,255,.35); box-shadow:0 0 50px rgba(155,92,255,.3);
+}
+.letter h2{font-size:clamp(1.6rem,5vw,2.3rem);color:var(--lav);margin-bottom:22px}
+.letter p{font-size:clamp(1.05rem,2.8vw,1.3rem);color:#f3ecff}
+.letter p strong{color:var(--pink);font-weight:normal}
+.sign{margin-top:26px;color:var(--pink);font-style:italic}
+
+/* ========== 6. REMINDER BUTTON + REVEAL ========== */
+.reminder{text-align:center;padding:20px 20px 60px}
+#note{
+  max-width:560px;margin:28px auto 0;padding:24px 26px;border-radius:22px;
+  background:linear-gradient(135deg,rgba(155,92,255,.3),rgba(255,194,226,.18));
+  border:1px solid var(--pink); font-size:1.2rem; color:var(--white);
+  opacity:0; transform:translateY(16px) scale(.97); max-height:0; overflow:hidden; padding-block:0;
+  transition:all .8s ease;
+}
+#note.show{opacity:1;transform:none;max-height:300px;padding-block:24px}
+
+/* ========== 7. GALLERY (extra photos, proportions kept) ========== */
+.gallery{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;max-width:1000px;margin:0 auto;padding:0 20px 50px}
+.gallery figure{flex:1 1 240px;max-width:300px;border-radius:20px;overflow:hidden;
+  border:1px solid rgba(201,179,255,.4);box-shadow:0 0 28px rgba(155,92,255,.4)}
+.gallery img{display:block;width:100%;height:auto}
+
+footer{text-align:center;padding:30px 20px 50px;color:var(--lav);font-size:.95rem}
+
+/* ========== 8. BACKGROUND EFFECTS (clouds, particles, butterflies) ========== */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.cloud{position:absolute;width:420px;height:160px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(155,92,255,.28),transparent 70%);
+  filter:blur(26px);animation:drift linear infinite}
+.spark{position:absolute;border-radius:50%;background:var(--lav);
+  box-shadow:0 0 10px var(--purple);animation:twinkle ease-in-out infinite}
+.bfly{position:absolute;bottom:-60px;filter:drop-shadow(0 0 8px var(--purple));
+  animation:fly linear infinite}
+.bfly span{display:block;animation:flap .5s ease-in-out infinite alternate}
+main{position:relative;z-index:2}
+
+/* ========== 9. KEYFRAME ANIMATIONS ========== */
+@keyframes rise{from{opacity:0;transform:translateY(24px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes float{50%{transform:translateY(-10px)}}
+@keyframes pulse{50%{box-shadow:0 0 55px rgba(201,179,255,.95),0 0 140px rgba(155,92,255,.55)}}
+@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes fly{
+  0%{transform:translate(0,0) rotate(-8deg)}
+  25%{transform:translate(40px,-30vh) rotate(8deg)}
+  50%{transform:translate(-30px,-60vh) rotate(-6deg)}
+  75%{transform:translate(35px,-90vh) rotate(8deg)}
+  100%{transform:translate(0,-125vh) rotate(-4deg)}
+}
+@keyframes flap{from{transform:scaleX(1)}to{transform:scaleX(.35)}}
+
+/* Scroll-triggered fade-in for sections */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity 1.2s, transform 1.2s}
+.reveal.in{opacity:1;transform:none}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01s!important;animation-iteration-count:1!important;transition-duration:.01s!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ========== WELCOME SCREEN ========== -->
+<div id="welcome">
+  <h1 class="glow">Welcome, Nyaborah 🦋</h1>
+  <p class="glow">Her Majesty, Miss Borchar</p>
+  <button class="btn" id="openBtn">Open Your Letter ✨</button>
+</div>
+
+<!-- Floating background layer (filled by JavaScript) -->
+<div id="fx"></div>
+
+<main>
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="crown">👑</div>
+    <h2 class="glow">Her Majesty, Miss Borchar</h2>
+
+    <!-- PUT YOUR BEST PHOTO IN images/hero.jpg (or change the src below) -->
+    <div class="frame" id="heroFrame">
+      <img src="Nyaborchar.jpg" alt="Nyaborah, Miss Borchar"
+           onerror="this.parentElement.classList.add('noimg')">
+      <div class="fallback">🦋</div>
+    </div>
+
+    <div class="scroll">scroll gently ↓</div>
+  </section>
+
+  <!-- ========== MESSAGE ========== -->
+  <section class="letter reveal">
+    <h2 class="glow">A Letter for You</h2>
+    <p>
+      Your Majesty, never stop believing in the beautiful woman you are becoming.
+      Keep learning, keep growing, and keep investing in yourself. Every skill you gain,
+      every challenge you overcome, and every dream you pursue brings you closer to your greatness.
+      Your crown is not just a symbol of beauty; it represents your <strong>courage</strong>,
+      <strong>wisdom</strong>, and <strong>potential</strong>. The world has so much more to see from you.
+      Keep shining, Your Majesty. <strong>Your journey is only beginning.</strong>
+    </p>
+    <p class="sign">With admiration 🦋</p>
+  </section>
+
+  <!-- ========== INTERACTIVE REMINDER ========== -->
+  <section class="reminder reveal">
+    <button class="btn" id="remindBtn">A Little Reminder for You 🦋</button>
+    <div id="note" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- ========== GALLERY (optional extra photos) ========== -->
+  <section class="gallery reveal" id="gallery">
+    <figure><img src="images/photo2.jpg" alt="Nyaborah" onerror="this.closest('figure').remove()"></figure>
+    <figure><img src="images/photo3.jpg" alt="Nyaborah" onerror="this.closest('figure').remove()"></figure>
+  </section>
+
+  <footer class="glow">Made with love, just for you ✨</footer>
+</main>
+
+<script>
+/* ========== A. OPEN THE LETTER ========== */
+const welcome = document.getElementById('welcome');
+document.getElementById('openBtn').addEventListener('click', () => {
+  welcome.classList.add('hide');
+  startReveal();
+});
+
+/* ========== B. SCROLL-TRIGGERED ENTRANCE EFFECTS ========== */
+function startReveal(){
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.2});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+}
+
+/* ========== C. REMINDER BUTTON ========== */
+const messages = [
+  "You are allowed to take up space, Your Majesty. 👑",
+  "Small steps still move you forward. Keep going. 🦋",
+  "You are growing more beautifully than you realize. ✨",
+  "Your courage is quieter than you think, and stronger too. 💜",
+  "Rest if you must, but never doubt your worth. 🌸"
+];
+const note = document.getElementById('note');
+let last = -1;
+document.getElementById('remindBtn').addEventListener('click', () => {
+  let i; do { i = Math.floor(Math.random()*messages.length); } while(i === last);
+  last = i;
+  note.classList.remove('show');            // restart the fade for each click
+  setTimeout(() => { note.textContent = messages[i]; note.classList.add('show'); }, 150);
+});
+
+/* ========== D. BACKGROUND: CLOUDS, PARTICLES, BUTTERFLIES ========== */
+const fx = document.getElementById('fx');
+const rand = (a,b) => Math.random()*(b-a)+a;
+const small = window.innerWidth < 600;          // fewer elements on phones = smoother
+
+for(let i=0;i<4;i++){                            // soft glowing clouds
+  const c = document.createElement('div'); c.className='cloud';
+  c.style.top = rand(0,80)+'vh'; c.style.animationDuration = rand(50,90)+'s';
+  c.style.animationDelay = '-'+rand(0,60)+'s'; fx.appendChild(c);
+}
+for(let i=0;i<(small?18:34);i++){                // twinkling particles
+  const s = document.createElement('div'); s.className='spark';
+  const size = rand(2,5);
+  s.style.cssText = `left:${rand(0,100)}vw;top:${rand(0,100)}vh;width:${size}px;height:${size}px;` +
+                    `animation-duration:${rand(3,7)}s;animation-delay:-${rand(0,6)}s`;
+  fx.appendChild(s);
+}
+const colors = ['hue-rotate(0deg)','hue-rotate(40deg)','hue-rotate(-30deg)'];
+for(let i=0;i<(small?6:10);i++){                 // floating butterflies
+  const b = document.createElement('div'); b.className='bfly';
+  b.innerHTML = '<span>🦋</span>';
+  b.style.cssText = `left:${rand(2,95)}vw;font-size:${rand(20,38)}px;` +
+                    `animation-duration:${rand(16,30)}s;animation-delay:-${rand(0,25)}s;`;
+  b.firstChild.style.filter = colors[i%3];
+  fx.appendChild(b);
+}
+</script>
+</body>
+</html>
